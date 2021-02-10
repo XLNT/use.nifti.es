@@ -1,4 +1,4 @@
-import { Divider, Heading, Link, ListItem, Text, UnorderedList, VStack } from '@chakra-ui/react';
+import { Divider, Heading, Link, Text, VStack } from '@chakra-ui/react';
 import { Pill } from 'client/components/Pill';
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
             A universal NFT metadata and rendering API.
           </Heading>
           <Heading as="h2" fontSize="md" lineHeight="tall">
-            <Pill prefix="🖼">use.nifti.es</Pill> returns an NFT's metadata in a consistent,
+            <Pill prefix="🖼">use.nifti.es</Pill> returns an NFT&apos;ps metadata in a consistent,
             universal format, as well as domain-specific rendering logic in order to render
             arbitrary NFTs.
           </Heading>

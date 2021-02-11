@@ -57,7 +57,7 @@ export async function getAssetMetadata({
       : await contract.functions.uri(tokenId);
 
   // substitution
-  const padded = ethers.utils.hexZeroPad(ethers.utils.arrayify(tokenId), 64).replace('0x', '');
+  const padded = ethers.utils.hexZeroPad(ethers.utils.arrayify(tokenId), 32).replace('0x', '');
   const resolved = uri.replace('{id}', padded);
 
   // now fetch that uri

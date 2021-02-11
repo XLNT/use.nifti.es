@@ -65,3 +65,7 @@ If you'd like to see support for more Ethereum-compatible networks, as well as o
 - ERC1155
 
 If you'd like to see support for more contract standards, please submit a PR to propose an integration.
+
+## References
+
+- [OpenSea metadata standard](https://docs.opensea.io/docs/metadata-standards)

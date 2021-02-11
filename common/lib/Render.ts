@@ -1,4 +1,5 @@
 // how should this NFT be rendered, optimizing for specificity and web environments?
+// opensea file types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV, OGG, GLB, GLTF. Max size: 100 MB
 export enum RenderType {
   Image = 'image', // `<img />`, includes .gif filetypes
   Picture = 'picture', // webp

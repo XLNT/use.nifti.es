@@ -69,3 +69,4 @@ If you'd like to see support for more contract standards, please submit a PR to 
 ## References
 
 - [OpenSea metadata standard](https://docs.opensea.io/docs/metadata-standards)
+- [a list of ethereum art projects](https://twitter.com/simondlr/status/1359599302193139716?s=12)

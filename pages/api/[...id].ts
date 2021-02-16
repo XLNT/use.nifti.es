@@ -1,62 +1,53 @@
-import { isCAIP22AssetID } from 'common/lib/CAIP22';
-import { isCAIPXXAssetID } from 'common/lib/CAIPXX';
-import { OpenSeaAssetContract } from 'common/lib/OpenSeaCollection';
 import { parseIdentifier } from 'common/lib/parseIdentifier';
-import { Render, RenderType } from 'common/lib/Render';
+import { AssetMetadata } from 'common/types/AssetMetadata';
+import { isAssetIDReference } from 'common/types/AssetReference';
+import { OpenSeaAssetContract } from 'common/types/OpenSea';
+import { RenderAsset } from 'common/types/Render';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { setCacheControl } from 'server/lib/cache';
-import { guardOnlyGet, handler, nope, yup } from 'server/lib/handler';
-import { AssetMetadata, getAssetMetadata } from 'server/lib/metadata';
-import { getAsset, getCollection } from 'server/lib/opensea';
-
-// TODO: consider defining a standard representation for a collection and merging opensea/rarible
+import { guardOnlyGet, handler, yup } from 'server/lib/handler';
+import { mapToRender } from 'server/lib/mapToRender';
+import { resolveAssetMetadata } from 'server/lib/metadata';
+import { getCollection } from 'server/lib/opensea';
 
 // the collection an asset is a part of
 interface AssetCollectionResponse {
-  opensea?: OpenSeaAssetContract;
+  name: string;
+  description: string;
+  opensea: OpenSeaAssetContract;
 }
 
 // an individual asset
 interface AssetMetadataResponse {
-  render: Render;
+  render: RenderAsset;
   metadata: AssetMetadata;
-  opensea?: any;
 }
 
 export default handler(async function address(req: NextApiRequest, res: NextApiResponse) {
   guardOnlyGet(req, res);
   setCacheControl(res);
 
-  const id = (req.query.id as string[]).join('/');
+  const idString = (req.query.id as string[]).join('/');
+  const locale = (req.query.locale as string) ?? 'en';
 
-  let reference: ReturnType<typeof parseIdentifier>;
-  try {
-    reference = parseIdentifier(id);
-  } catch (error) {
-    return nope(res, 400, error.message);
-  }
+  // parse the identifier from the passed string
+  const identifier = parseIdentifier(idString);
 
-  if (isCAIP22AssetID(reference) || isCAIPXXAssetID(reference)) {
-    const metadata = await getAssetMetadata(reference);
-    // const opensea = await getAsset(reference);
-    // TODO: render logic
-    // fetch asset-specific metadata
-    const response: AssetMetadataResponse = {
-      render: {
-        type: RenderType.Image,
-        src: metadata.image,
-        alt: [metadata.name, metadata.description].filter(Boolean).join(' — '),
-      },
-      // opensea,
+  if (isAssetIDReference(identifier)) {
+    const metadata = await resolveAssetMetadata(identifier, locale);
+    const render = await mapToRender(identifier, metadata);
+
+    return yup<AssetMetadataResponse>(res, {
+      render,
       metadata,
-    };
-    return yup(res, response);
+    });
   } else {
-    // fetch collection metadata
-    const response: AssetCollectionResponse = {
-      // opensea: await getCollection(reference),
-    };
+    const opensea = await getCollection(identifier);
 
-    return yup(res, response);
+    return yup<AssetCollectionResponse>(res, {
+      name: opensea.name,
+      description: opensea.description,
+      opensea,
+    });
   }
 });

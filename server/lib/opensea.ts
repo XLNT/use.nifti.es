@@ -1,11 +1,12 @@
 import { CAIP3NetworkId, MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID } from 'common/lib/CAIP3';
-import { CAIP22AssetID, CAIP22AssetType } from 'common/lib/CAIP22';
-import { CAIPXXAssetID, CAIPXXAssetType } from 'common/lib/CAIPXX';
-import { OpenSeaAssetContract } from 'common/lib/OpenSeaCollection';
+import { AssetID, AssetType } from 'common/types/AssetReference';
+import { OpenSeaAsset, OpenSeaAssetContract } from 'common/types/OpenSea';
+
+import { fetchURI } from './fetchers';
 
 const BASE_URL = {
   [MAINNET_NETWORK_ID]: 'https://api.opensea.io/api/v1',
-  [RINKEBY_NETWORK_ID]: 'https://rinkeby-api.opensea.io/api/v1/',
+  [RINKEBY_NETWORK_ID]: 'https://rinkeby-api.opensea.io/api/v1',
 };
 
 export function canFetchOpenSea(chainId: CAIP3NetworkId) {
@@ -15,16 +16,12 @@ export function canFetchOpenSea(chainId: CAIP3NetworkId) {
 export async function getCollection({
   chainId,
   assetReference,
-}: CAIP22AssetType | CAIPXXAssetType): Promise<OpenSeaAssetContract> {
+}: AssetType): Promise<OpenSeaAssetContract> {
   if (!canFetchOpenSea(chainId)) return undefined;
 
-  const response = await fetch(`${BASE_URL[chainId]}/v1/asset_contract/${assetReference}`, {
-    headers: {
-      'User-Agent': 'use.nifti.es/1.0.0',
-    },
-  });
-
-  const data = await response.json();
+  const data = await fetchURI<OpenSeaAssetContract>(
+    `${BASE_URL[chainId]}/asset_contract/${assetReference}`,
+  );
 
   return data;
 }
@@ -33,16 +30,12 @@ export async function getAsset({
   chainId,
   assetReference,
   tokenId,
-}: CAIP22AssetID | CAIPXXAssetID): Promise<any> {
+}: AssetID): Promise<OpenSeaAsset> {
   if (!canFetchOpenSea(chainId)) return undefined;
 
-  const response = await fetch(`${BASE_URL[chainId]}/v1/asset/${assetReference}/${tokenId}`, {
-    headers: {
-      'User-Agent': 'use.nifti.es/1.0.0',
-    },
-  });
-
-  const data = await response.json();
+  const data = await fetchURI<OpenSeaAsset>(
+    `${BASE_URL[chainId]}/asset/${assetReference}/${tokenId}`,
+  );
 
   return data;
 }

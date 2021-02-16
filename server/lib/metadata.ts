@@ -1,14 +1,10 @@
-import { CAIP22AssetID } from 'common/lib/CAIP22';
-import { CAIPXXAssetID } from 'common/lib/CAIPXX';
+import { resolveURI, rewriteToHTTPIfPossible } from 'common/lib/uri';
+import { AssetMetadata } from 'common/types/AssetMetadata';
+import { AssetID } from 'common/types/AssetReference';
 import { ethers } from 'ethers';
 
-// ERC721 / ERC1155 Metadata Standard & Extension
-export interface AssetMetadata {
-  name: string;
-  description?: string;
-  decimals?: number;
-  image?: string;
-}
+import { canFetchURI, fetchURI } from './fetchers';
+import { getAsset } from './opensea';
 
 const ERC721Abi = [
   {
@@ -30,45 +26,93 @@ const ERC1155Abi = [
   },
 ];
 
-export async function getAssetMetadata({
-  chainId,
-  assetNamespace,
-  assetReference,
-  tokenId,
-}: CAIP22AssetID | CAIPXXAssetID): Promise<AssetMetadata> {
+async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<AssetMetadata> {
+  const { chainId, assetNamespace, assetReference, tokenId } = identifier;
   // TODO: validate chain Ids
   const ethereumChainId = parseInt(chainId.split(':')[1]);
-  const provider = new ethers.providers.InfuraProvider(
-    ethereumChainId,
-    process.env.INFURA_PROJECT_ID,
-  );
 
-  // TODO: handle cryptokitties as an assetNamespace
+  switch (assetNamespace) {
+    case 'cryptopunks':
+    case 'cryptokitties': {
+      // in the case of punks and kitties, instead of actually respecting their interfaces, we're
+      // just going to query the opensea API for that info, format it as a standard ERC721/1155
+      // metadata payload, and call it a day
+      const opensea = await getAsset(identifier);
 
-  const contract = new ethers.Contract(
-    assetReference,
-    assetNamespace === 'erc721' ? ERC721Abi : ERC1155Abi,
-    provider,
-  );
+      return {
+        name: opensea.name,
+        description: opensea.description,
+        image: opensea.image_original_url,
+        decimals: opensea.decimals,
+        youtube_url: opensea.youtube_url,
+        external_url: opensea.external_link,
+        animation_url: opensea.animation_original_url,
+        background_color: opensea.background_color,
+      };
+    }
+    default: {
+      // conform to the ERC 721 / 1155 Metadata client standard by fetching and resolving metadata
+      const provider = new ethers.providers.InfuraProvider(
+        ethereumChainId,
+        process.env.INFURA_PROJECT_ID,
+      );
 
-  const [uri]: [string] =
-    assetNamespace === 'erc721'
-      ? await contract.functions.tokenURI(tokenId)
-      : await contract.functions.uri(tokenId);
+      // TODO: check for supportsInterface and ERC721 / ERC1155 interfaceIds
+      // ERC721 = 0x5b5e139f, ERC1155 = 0x0e89341c
 
-  // substitution
-  const padded = ethers.utils.hexZeroPad(ethers.utils.arrayify(tokenId), 32).replace('0x', '');
-  const resolved = uri.replace('{id}', padded);
+      const contract = new ethers.Contract(
+        assetReference,
+        assetNamespace === 'erc721' ? ERC721Abi : ERC1155Abi,
+        provider,
+      );
 
-  // now fetch that uri
-  // TODO: URI decoder to support ipfs, etc
-  const response = await fetch(resolved, {
-    headers: {
-      'User-Agent': 'use.nifti.es/1.0.0',
-    },
-  });
+      let uri: string;
 
-  const data = await response.json();
+      try {
+        [uri] =
+          assetNamespace === 'erc721'
+            ? await contract.functions.tokenURI(tokenId)
+            : await contract.functions.uri(tokenId);
+      } catch (error) {
+        // TODO: differentiate between token does not exist & token does not support metadata standard
+        throw new Error(`Error fetching metadata URI from chain: ${error.message}`);
+      }
 
-  return data as AssetMetadata;
+      // substitution
+      const resolved = resolveURI(uri, tokenId, locale);
+
+      if (!canFetchURI(uri)) {
+        throw new Error(`Unsupported URI scheme ${resolved}`);
+      }
+
+      const data = await fetchURI<AssetMetadata>(resolved);
+
+      return data;
+    }
+  }
+}
+
+// TODO: resolve locale references & merge into top-level
+async function localizeMetadata(metadata: AssetMetadata, locale: string): Promise<AssetMetadata> {
+  return metadata;
+}
+
+async function proxyNonHTTPURIs(metadata: AssetMetadata): Promise<AssetMetadata> {
+  return {
+    ...metadata,
+    image: rewriteToHTTPIfPossible(metadata.image),
+    external_url: rewriteToHTTPIfPossible(metadata.external_url),
+    animation_url: rewriteToHTTPIfPossible(metadata.animation_url),
+  };
+}
+
+export async function resolveAssetMetadata(
+  identifier: AssetID,
+  locale: string,
+): Promise<AssetMetadata> {
+  const metadata = await fetchAssetMetadata(identifier, locale);
+  const localized = await localizeMetadata(metadata, locale);
+  const proxied = await proxyNonHTTPURIs(localized);
+
+  return proxied;
 }

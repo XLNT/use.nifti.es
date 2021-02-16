@@ -114,3 +114,43 @@ export interface OpenSeaAssetContract {
   seller_fee_basis_points: number;
   payout_address: null | string;
 }
+
+export interface OpenSeaAsset {
+  token_id: string;
+  background_color: null | string; // a2c2eb
+  image_url: null | string;
+  image_preview_url: null | string;
+  image_thumbnail_url: null | string;
+  image_original_url: null | string;
+  animation_url: null | string;
+  youtube_url: null | string;
+  animation_original_url: null;
+  name: string;
+  description: string;
+  external_link: null | string;
+  asset_contract: OpenSeaAssetContract;
+  permalink: null | string;
+  collection: OpenSeaCollection;
+  decimals: null | number;
+  sell_orders: null;
+  traits: {
+    trait_type: string;
+    value: string;
+    display_type: null;
+    max_value: null;
+    trait_count: number;
+    order: null;
+  }[];
+  last_sale: any;
+  top_bid: null;
+  listing_date: null;
+  is_presale: false;
+  transfer_fee_payment_token: null;
+  transfer_fee: null;
+  related_assets: any[];
+  orders: any[];
+  auctions: null;
+  supports_wyvern: true;
+  ownership: null;
+  highest_buyer_commitment: null;
+}

@@ -4,7 +4,7 @@ export function nope(res: NextApiResponse, status: number, message: string) {
   return res.status(status).json({ message });
 }
 
-export function yup(res: NextApiResponse, body: Record<string, any>) {
+export function yup<T>(res: NextApiResponse, body: T) {
   return res.status(200).json(body);
 }
 

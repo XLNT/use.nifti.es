@@ -4,7 +4,8 @@ export type CAIP3NetworkId = string;
 export const MAINNET_NETWORK_ID = 'eip155:1';
 export const RINKEBY_NETWORK_ID = 'eip155:4';
 export const GORLI_NETWORK_ID = 'eip155:5';
+export const MATIC_NETWORK_ID = 'eip155:137';
 
 // TODO: make this more generic
 export const isCAIP3NetworkId = (networkId: string): networkId is CAIP3NetworkId =>
-  [MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID, GORLI_NETWORK_ID].includes(networkId);
+  [MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID, GORLI_NETWORK_ID, MATIC_NETWORK_ID].includes(networkId);

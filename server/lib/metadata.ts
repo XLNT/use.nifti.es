@@ -1,6 +1,7 @@
+import { MATIC_NETWORK_ID } from 'common/lib/CAIP3';
 import { resolveURI, rewriteToHTTPIfPossible } from 'common/lib/uri';
 import { AssetMetadata } from 'common/types/AssetMetadata';
-import { AssetID } from 'common/types/AssetReference';
+import { AssetID, AssetType } from 'common/types/AssetReference';
 import { ethers } from 'ethers';
 
 import { canFetchURI, fetchURI } from './fetchers';
@@ -26,10 +27,19 @@ const ERC1155Abi = [
   },
 ];
 
-async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<AssetMetadata> {
-  const { chainId, assetNamespace, assetReference, tokenId } = identifier;
+function providerForChain(chainId: string) {
+  if (chainId === MATIC_NETWORK_ID) {
+    return new ethers.providers.JsonRpcProvider('https://rpc-mainnet.matic.network');
+  }
+
   // TODO: validate chain Ids
   const ethereumChainId = parseInt(chainId.split(':')[1]);
+
+  return new ethers.providers.InfuraProvider(ethereumChainId, process.env.INFURA_PROJECT_ID);
+}
+
+async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<AssetMetadata> {
+  const { chainId, assetNamespace, assetReference, tokenId } = identifier;
 
   switch (assetNamespace) {
     case 'cryptopunks':
@@ -52,10 +62,7 @@ async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<
     }
     default: {
       // conform to the ERC 721 / 1155 Metadata client standard by fetching and resolving metadata
-      const provider = new ethers.providers.InfuraProvider(
-        ethereumChainId,
-        process.env.INFURA_PROJECT_ID,
-      );
+      const provider = providerForChain(chainId);
 
       // TODO: check for supportsInterface and ERC721 / ERC1155 interfaceIds
       // ERC721 = 0x5b5e139f, ERC1155 = 0x0e89341c

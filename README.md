@@ -56,6 +56,7 @@ Check out [CAIP-19](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/cai
 - `eip155:1` — mainnet
 - `eip155:4` — rinkeby
 - 🔜 `eip155:5` — görli
+- 🔜 `eip155:137` — matic
 
 If you'd like to see support for more Ethereum-compatible networks, as well as other chains supported by CAIP addressing formats, please submit a PR to propose an integration.
 

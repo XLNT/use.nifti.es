@@ -1,7 +1,7 @@
 import { MATIC_NETWORK_ID } from 'common/lib/CAIP3';
 import { resolveURI, rewriteToHTTPIfPossible } from 'common/lib/uri';
 import { AssetMetadata } from 'common/types/AssetMetadata';
-import { AssetID, AssetType } from 'common/types/AssetReference';
+import { AssetID } from 'common/types/AssetReference';
 import { ethers } from 'ethers';
 
 import { canFetchURI, fetchURI } from './fetchers';
@@ -88,6 +88,8 @@ async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<
       if (!uri) {
         throw new Error(`No URI returned from contract ${identifier}`);
       }
+
+      console.log('uri');
 
       // substitution
       const resolved = resolveURI(uri, tokenId, locale);

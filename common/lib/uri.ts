@@ -4,12 +4,13 @@ import { proxyThroughPublicGateway } from 'server/lib/ipfs';
 // https://eips.ethereum.org/EIPS/eip-1155
 export function resolveURIWithTokenId(uri: string, tokenId: BigNumberish) {
   const paddedTokenId = utils.hexZeroPad(utils.arrayify(tokenId), 32).replace('0x', '');
-  return uri.replaceAll('{id}', paddedTokenId);
+  // NOTE: replaceAll is not supported by nodejs12 (vercel runtime) so use global .replace instead
+  return uri.replace(/\{id\}/gi, paddedTokenId);
 }
 
 // https://eips.ethereum.org/EIPS/eip-1155
 export function resolveURIWithLocale(uri: string, locale: string) {
-  return uri.replaceAll('{locale}', locale);
+  return uri.replace(/\{locale\}/gi, locale);
 }
 
 export function resolveURI(uri: string, tokenId: BigNumberish, locale: string) {

@@ -89,6 +89,8 @@ async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<
         throw new Error(`No URI returned from contract ${identifier}`);
       }
 
+      console.log('uri', uri);
+
       // substitution
       const resolved = resolveURI(uri, tokenId, locale);
 

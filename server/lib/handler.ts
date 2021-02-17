@@ -19,9 +19,7 @@ export function handler(handle: (req: NextApiRequest, res: NextApiResponse) => P
       await handle(req, res);
     } catch (error) {
       console.error(error);
-      const message =
-        process.env.NODE_ENV === 'development' ? error.message : 'Internal Server Error';
-      return nope(res, 500, message);
+      return nope(res, 500, error.message);
     }
   };
 }

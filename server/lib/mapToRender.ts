@@ -34,6 +34,15 @@ export async function mapToRender(
 
   // TODO: what metadata schema is used for videos (not animated loops?)
   if (metadata.animation_url) {
+    // TODO: true url parse
+    const parts = metadata.animation_url.split('.');
+    const ext = parts.length > 0 ? parts[parts.length - 1] : undefined;
+    if (ext === 'gif') {
+      // these are actually generic images in disguise, and we make sure to use the animation
+      // url as the primary image
+      return renderGenericImage({ ...metadata, image: metadata.animation_url });
+    }
+
     return {
       type: RenderType.Video,
       animated: true,

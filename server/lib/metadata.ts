@@ -1,5 +1,5 @@
 import { MATIC_NETWORK_ID } from 'common/lib/CAIP3';
-import { resolveURI, rewriteToHTTPIfPossible } from 'common/lib/uri';
+import { resolveURI, resolveURIWithTokenId, rewriteToHTTPIfPossible } from 'common/lib/uri';
 import { AssetMetadata } from 'common/types/AssetMetadata';
 import { AssetID } from 'common/types/AssetReference';
 import { ethers } from 'ethers';
@@ -38,7 +38,7 @@ function providerForChain(chainId: string) {
   return new ethers.providers.InfuraProvider(ethereumChainId, process.env.INFURA_PROJECT_ID);
 }
 
-async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<AssetMetadata> {
+async function fetchAssetMetadata(identifier: AssetID): Promise<AssetMetadata> {
   const { chainId, assetNamespace, assetReference, tokenId } = identifier;
 
   switch (assetNamespace) {
@@ -90,7 +90,7 @@ async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<
       }
 
       // substitution
-      const resolved = resolveURI(uri, tokenId, locale);
+      const resolved = resolveURIWithTokenId(uri, tokenId);
 
       if (!canFetchURI(uri)) {
         throw new Error(`Unsupported URI scheme ${resolved}`);
@@ -104,8 +104,28 @@ async function fetchAssetMetadata(identifier: AssetID, locale: string): Promise<
 }
 
 // TODO: resolve locale references & merge into top-level
-async function localizeMetadata(metadata: AssetMetadata, locale: string): Promise<AssetMetadata> {
-  return metadata;
+async function localizeMetadata(
+  { tokenId }: AssetID,
+  metadata: AssetMetadata,
+  locale: string,
+): Promise<AssetMetadata> {
+  // metadata does not support localization
+  if (!metadata.localization) return metadata;
+
+  // use the client's locale, then the metadata default, then english.
+  const _locale = locale ?? metadata.localization.default ?? 'en';
+
+  // error, not a supported locale for this asset
+  if (!metadata.localization.locales?.includes(_locale)) return metadata;
+
+  // resolve that uri
+  const localizedMetadataURI = resolveURI(metadata.localization.uri, tokenId, _locale);
+
+  // load it
+  const localizedMetadata = await fetchURI<Partial<AssetMetadata>>(localizedMetadataURI);
+
+  // TODO: deepmerge?
+  return { ...metadata, ...localizedMetadata };
 }
 
 async function proxyNonHTTPURIs(metadata: AssetMetadata): Promise<AssetMetadata> {
@@ -121,8 +141,8 @@ export async function resolveAssetMetadata(
   identifier: AssetID,
   locale: string,
 ): Promise<AssetMetadata> {
-  const metadata = await fetchAssetMetadata(identifier, locale);
-  const localized = await localizeMetadata(metadata, locale);
+  const metadata = await fetchAssetMetadata(identifier);
+  const localized = await localizeMetadata(identifier, metadata, locale);
   const proxied = await proxyNonHTTPURIs(localized);
 
   return proxied;

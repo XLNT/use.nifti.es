@@ -25,6 +25,11 @@ export interface AssetMetadata {
   description?: string;
   decimals?: number;
   image?: string;
+  localization?: {
+    uri: string;
+    default: string;
+    locales: string[];
+  };
 
   // opensea 'standard'
   external_url?: string;

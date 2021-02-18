@@ -28,7 +28,7 @@ export default handler(async function address(req: NextApiRequest, res: NextApiR
   setCacheControl(res);
 
   const idString = (req.query.id as string[]).join('/');
-  const locale = (req.query.locale as string) ?? 'en';
+  const locale = req.query.locale as string;
 
   // parse the identifier from the passed string
   const identifier = parseIdentifier(idString);

@@ -32,5 +32,15 @@ export async function mapToRender(
     };
   }
 
+  // TODO: what metadata schema is used for videos (not animated loops?)
+  if (metadata.animation_url) {
+    return {
+      type: RenderType.Video,
+      animated: true,
+      poster: metadata.image,
+      sources: [{ src: metadata.animation_url }],
+    };
+  }
+
   return renderGenericImage(metadata);
 }

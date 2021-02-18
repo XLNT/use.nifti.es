@@ -3,7 +3,6 @@ import { NoEmbedData } from './OEmbed';
 export enum RenderType {
   Empty = 'empty', // we have no information to display
   Image = 'image', // <img /> and <picture /> rendering
-  Animated = 'animated', // html5 gifs aka `<video autoPlay loop muted playsInline controls={false} disablePictureInPicture />`
   Video = 'video', // <video /> rendering for mp4, webm, etc
   OEmbed = 'oembed', // an oEmbed-compatible embed, see https://oembed.com/
   Audio = 'audio', // <audio /> rendering for mp3, wav, ogg, etc
@@ -35,14 +34,12 @@ export interface RenderImage {
 
 export interface RenderVideo {
   type: RenderType.Video;
+  poster?: string;
   sources: Source[];
   backgroundColor?: string;
-}
 
-export interface RenderAnimated {
-  type: RenderType.Animated;
-  sources: Source[];
-  backgroundColor?: string;
+  // html5 gifs aka `<video autoPlay loop muted playsInline controls={false} disablePictureInPicture />`
+  animated: boolean;
 }
 
 export interface RenderOEmbed {
@@ -79,7 +76,6 @@ export interface RenderModel {
 export type RenderAsset =
   | RenderEmpty
   | RenderImage
-  | RenderAnimated
   | RenderVideo
   | RenderOEmbed
   | RenderAudio

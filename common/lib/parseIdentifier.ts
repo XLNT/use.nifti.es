@@ -9,11 +9,11 @@ import {
   isCAIP22TokenID,
 } from './CAIP22';
 import {
-  CAIPXXTokenID,
-  isCAIPXXAssetNamespace,
-  isCAIPXXAssetReference,
-  isCAIPXXTokenID,
-} from './CAIPXX';
+  CAIP29TokenID,
+  isCAIP29AssetNamespace,
+  isCAIP29AssetReference,
+  isCAIP29TokenID,
+} from './CAIP29';
 import {
   isKittiesAndPunksAssetNamespace,
   isKittiesAndPunksAssetReference,
@@ -33,27 +33,27 @@ export function parseIdentifier(id: string): AnyID {
 
   if (
     !isCAIP22AssetNamespace(assetNamespace) &&
-    !isCAIPXXAssetNamespace(assetNamespace) &&
+    !isCAIP29AssetNamespace(assetNamespace) &&
     !isKittiesAndPunksAssetNamespace(assetNamespace)
   ) {
     throw new Error(
-      `${assetNamespace} is not a valid CAIP-22, CAIP-XX, Kitty, or Punk Asset Namespace`,
+      `${assetNamespace} is not a valid CAIP-22, CAIP-29, Kitty, or Punk Asset Namespace`,
     );
   }
 
   if (
     !isCAIP22AssetReference(assetReference) &&
-    !isCAIPXXAssetReference(assetReference) &&
+    !isCAIP29AssetReference(assetReference) &&
     !isKittiesAndPunksAssetReference(assetReference)
   ) {
-    throw new Error(`${assetReference} is not a valid CAIP-22 or CAIP-XX Asset Reference`);
+    throw new Error(`${assetReference} is not a valid CAIP-22 or CAIP-29 Asset Reference`);
   }
 
-  let tokenId: CAIP22TokenID | CAIPXXTokenID;
+  let tokenId: CAIP22TokenID | CAIP29TokenID;
   if (_tokenId !== undefined) {
     tokenId = ethers.BigNumber.from(_tokenId);
-    if (!isCAIP22TokenID(tokenId) && !isCAIPXXTokenID(tokenId)) {
-      throw new Error(`${tokenId} is not a valid CAIP-22 or CAIP-XX Token Id`);
+    if (!isCAIP22TokenID(tokenId) && !isCAIP29TokenID(tokenId)) {
+      throw new Error(`${tokenId} is not a valid CAIP-22 or CAIP-29 Token Id`);
     }
   }
 

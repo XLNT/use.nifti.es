@@ -19,6 +19,15 @@ const CASES: [string, CAIP19AssetType | CAIP19AssetID][] = [
       tokenId: '771769',
     },
   ],
+  [
+    'eip155:1/erc1155:0x28959Cf125ccB051E70711D0924a62FB28EAF186/0',
+    {
+      chainId: 'eip155:1',
+      assetNamespace: 'erc1155',
+      assetReference: '0x28959Cf125ccB051E70711D0924a62FB28EAF186',
+      tokenId: '0',
+    },
+  ],
 ];
 
 CASES.forEach(([input, output]) =>

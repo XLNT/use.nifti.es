@@ -4,9 +4,10 @@ import { isAssetIDReference } from 'common/types/AssetReference';
 import { OpenSeaAssetContract } from 'common/types/OpenSea';
 import { RenderAsset } from 'common/types/Render';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { setCacheControl } from 'server/lib/cache';
 import { guardOnlyGet, handler, yup } from 'server/lib/handler';
+import { setCacheControl } from 'server/lib/httpCache';
 import { mapToRender } from 'server/lib/mapToRender';
+import { cache } from 'server/lib/metaCache';
 import { resolveAssetMetadata } from 'server/lib/metadata';
 import { getCollection } from 'server/lib/opensea';
 
@@ -23,6 +24,9 @@ interface AssetMetadataResponse {
   metadata: AssetMetadata;
 }
 
+// should be fine, idk
+cache.init().catch(console.error.bind(console));
+
 export default handler(async function address(req: NextApiRequest, res: NextApiResponse) {
   guardOnlyGet(req, res);
   setCacheControl(res);
@@ -34,15 +38,21 @@ export default handler(async function address(req: NextApiRequest, res: NextApiR
   const identifier = parseIdentifier(idString);
 
   if (isAssetIDReference(identifier)) {
-    const metadata = await resolveAssetMetadata(identifier, locale);
-    const render = await mapToRender(identifier, metadata);
+    const metadataKey = `${idString}-${locale}`;
+    const metadata = await cache.maybe(`m-${metadataKey}`, () => {
+      return resolveAssetMetadata(identifier, locale);
+    });
+
+    const render = await cache.maybe(`r-${metadataKey}`, () => {
+      return mapToRender(identifier, metadata);
+    });
 
     return yup<AssetMetadataResponse>(res, {
       render,
       metadata,
     });
   } else {
-    const opensea = await getCollection(identifier);
+    const opensea = await cache.maybe(`c-${idString}`, () => getCollection(identifier));
 
     return yup<AssetCollectionResponse>(res, {
       name: opensea.name,

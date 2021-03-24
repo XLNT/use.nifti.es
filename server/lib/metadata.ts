@@ -1,4 +1,4 @@
-import { MATIC_NETWORK_ID } from 'common/lib/CAIP3';
+import { MAINNET_NETWORK_ID, MATIC_NETWORK_ID, RINKEBY_NETWORK_ID } from 'common/lib/CAIP3';
 import { resolveURI, resolveURIWithTokenId, rewriteToHTTPIfPossible } from 'common/lib/uri';
 import { AssetMetadata } from 'common/types/AssetMetadata';
 import { AssetID } from 'common/types/AssetReference';
@@ -27,12 +27,17 @@ const ERC1155Abi = [
   },
 ];
 
+const VALID_INFURA_NETWORK_IDS = [MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID];
+
 function providerForChain(chainId: string) {
   if (chainId === MATIC_NETWORK_ID) {
     return new ethers.providers.JsonRpcProvider('https://rpc-mainnet.matic.network');
   }
 
-  // TODO: validate chain Ids
+  if (!VALID_INFURA_NETWORK_IDS.includes(chainId)) {
+    throw new Error(`Chain with ID ${chainId} is not a valid Infura chain id.`);
+  }
+
   const ethereumChainId = parseInt(chainId.split(':')[1]);
 
   return new ethers.providers.InfuraProvider(ethereumChainId, process.env.INFURA_PROJECT_ID);

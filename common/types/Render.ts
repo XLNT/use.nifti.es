@@ -73,7 +73,7 @@ export interface RenderModel {
   skyboxImage?: string;
 }
 
-export type RenderAsset =
+export type RenderAnyAsset =
   | RenderEmpty
   | RenderImage
   | RenderVideo
@@ -81,3 +81,7 @@ export type RenderAsset =
   | RenderAudio
   | RenderSVG
   | RenderModel;
+
+type RenderWithFallback = { fallback?: RenderImage };
+
+export type RenderAsset = RenderAnyAsset & RenderWithFallback;

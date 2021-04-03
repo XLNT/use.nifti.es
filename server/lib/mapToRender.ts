@@ -1,13 +1,13 @@
 import { AssetMetadata } from 'common/types/AssetMetadata';
 import { AssetID } from 'common/types/AssetReference';
-import { RenderAsset, RenderType } from 'common/types/Render';
+import { RenderAsset, RenderImage, RenderType } from 'common/types/Render';
 
 import { getOEmbedData } from './oembed';
 
 const getAlt = (metadata: AssetMetadata) =>
   [metadata.name, metadata.description].filter(Boolean).join(' — ');
 
-function renderGenericImage(metadata: AssetMetadata): RenderAsset {
+function mapToGenericImage(metadata: AssetMetadata): RenderImage {
   return {
     type: RenderType.Image,
     src: metadata.image,
@@ -15,6 +15,9 @@ function renderGenericImage(metadata: AssetMetadata): RenderAsset {
     sources: [{ src: metadata.image }],
   };
 }
+
+export const mapToFallback = (reference: AssetID, metadata: AssetMetadata) =>
+  mapToGenericImage(metadata);
 
 export async function mapToRender(
   reference: AssetID,
@@ -29,8 +32,16 @@ export async function mapToRender(
     return {
       type: RenderType.OEmbed,
       data,
+      fallback: {
+        type: RenderType.Image,
+        src: data.thumbnail_url,
+        alt: getAlt(metadata),
+        sources: [{ src: data.thumbnail_url }],
+      },
     };
   }
+
+  const fallback = mapToFallback(reference, metadata);
 
   // TODO: what metadata schema is used for videos (not animated loops?)
   if (metadata.animation_url) {
@@ -40,7 +51,10 @@ export async function mapToRender(
     if (ext === 'gif') {
       // these are actually generic images in disguise, and we make sure to use the animation
       // url as the primary image
-      return renderGenericImage({ ...metadata, image: metadata.animation_url });
+      return {
+        ...mapToGenericImage({ ...metadata, image: metadata.animation_url }),
+        fallback,
+      };
     }
 
     return {
@@ -48,8 +62,12 @@ export async function mapToRender(
       animated: true,
       poster: metadata.image,
       sources: [{ src: metadata.animation_url }],
+      fallback,
     };
   }
 
-  return renderGenericImage(metadata);
+  return {
+    ...mapToGenericImage(metadata),
+    fallback,
+  };
 }

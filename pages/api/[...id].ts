@@ -29,7 +29,7 @@ interface AssetMetadataResponse {
 cache.init().catch(console.error.bind(console));
 
 export default handler(async function address(req: NextApiRequest, res: NextApiResponse) {
-  setCors(req, res);
+  setCors(res);
   guardOnlyGet(req, res);
   setCacheControl(res);
 

@@ -8,7 +8,8 @@
     "lint": "eslint --ext .ts,.tsx",
     "start": "next start",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "script": "NODE_ENV=${NODE_ENV:-development} node -r ts-node/register -r tsconfig-paths/register"
   },
   "husky": {
     "hooks": {
@@ -57,6 +58,7 @@
     "pretty-quick": "^3.1.0",
     "ts-jest": "^26.5.0",
     "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.1.3"
   }
 }

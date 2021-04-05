@@ -3,7 +3,8 @@ import { AspectRatio, Container, Heading, VStack } from '@chakra-ui/layout';
 import { RenderNiftyAsset } from 'client/components/RenderNiftyAsset';
 import { toPlainText } from 'common/toPlainText';
 import type { AssetMetadataResult } from 'common/types/Responses';
-import type { GetServerSideProps } from 'next';
+import type { GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/dist/client/router';
 import { NextSeo } from 'next-seo';
 import type { ComponentPropsWithoutRef } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -19,6 +20,10 @@ function View({
   error?: string;
   meta: { title: string; description: string; image?: string; alt?: string };
 }) {
+  const { isFallback } = useRouter();
+
+  if (isFallback) return null;
+
   return (
     <>
       <NextSeo
@@ -53,10 +58,10 @@ function View({
   );
 }
 
-export const getServerSideProps: GetServerSideProps<ComponentPropsWithoutRef<typeof View>> = async (
+export const getStaticProps: GetStaticProps<ComponentPropsWithoutRef<typeof View>> = async (
   ctx,
 ) => {
-  if (ctx.params.id.length !== 3) return { notFound: true };
+  if (ctx.params.id.length !== 3) return { notFound: true, revalidate: 60 };
 
   const id = (ctx.params.id as string[]).join('/');
   let result: AssetMetadataResult;
@@ -71,6 +76,7 @@ export const getServerSideProps: GetServerSideProps<ComponentPropsWithoutRef<typ
           description: error.message,
         },
       },
+      revalidate: 60,
     };
   }
 
@@ -89,7 +95,12 @@ export const getServerSideProps: GetServerSideProps<ComponentPropsWithoutRef<typ
         alt: metaAlt,
       },
     },
+    revalidate: 60,
   };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return { paths: [], fallback: true };
 };
 
 export default View;

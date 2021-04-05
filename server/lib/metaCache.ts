@@ -10,6 +10,10 @@ export class MetaCache {
     await this.cache.init();
   }
 
+  async clear() {
+    await this.cache.clear();
+  }
+
   async maybe<T>(key: string, resolve: Resolver<T>): Promise<T> {
     const value = await this.cache.get<T>(key);
     if (value !== null) return value;

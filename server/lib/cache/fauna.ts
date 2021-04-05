@@ -13,6 +13,15 @@ export class FaunaDBCache implements MetadataCacheImplementation {
     await this.upsertIndex();
   }
 
+  async clear(): Promise<void> {
+    await this.client.query(
+      q.Map(
+        q.Paginate(q.Documents(q.Collection(this.collection)), { size: 9999 }),
+        q.Lambda(['ref'], q.Delete(q.Var('ref'))),
+      ),
+    );
+  }
+
   async set(key: string, value: CacheableValue): Promise<void> {
     // this upsert seems overly complex, but whatever
     await this.client.query(

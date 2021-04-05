@@ -1,4 +1,5 @@
 import { parseIdentifier } from 'common/lib/parseIdentifier';
+import { stringifyIdentifier } from 'common/lib/stringifyIdentifier';
 import { isAssetIDReference } from 'common/types/AssetReference';
 import { AssetCollectionResult, AssetMetadataResult } from 'common/types/Responses';
 
@@ -13,14 +14,15 @@ export async function resolve(
 ): Promise<AssetMetadataResult | AssetCollectionResult> {
   // parse the identifier from the passed string
   const identifier = parseIdentifier(id);
+  const normalizedIdString = stringifyIdentifier(identifier);
+  const key = `${normalizedIdString}-${locale}`;
 
   if (isAssetIDReference(identifier)) {
-    const metadataKey = `${id}-${locale}`;
-    const metadata = await cache.maybe(`m-${metadataKey}`, () => {
+    const metadata = await cache.maybe(`m-${key}`, () => {
       return resolveAssetMetadata(identifier, locale);
     });
 
-    const render = await cache.maybe(`r-${metadataKey}`, () => {
+    const render = await cache.maybe(`r-${key}`, () => {
       return mapToRender(identifier, metadata);
     });
 
@@ -29,7 +31,7 @@ export async function resolve(
       metadata,
     };
   } else {
-    const opensea = await cache.maybe(`c-${id}`, () => getCollection(identifier));
+    const opensea = await cache.maybe(`c-${key}`, () => getCollection(identifier));
 
     return {
       name: opensea.name,

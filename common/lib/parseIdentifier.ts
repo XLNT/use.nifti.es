@@ -51,7 +51,12 @@ export function parseIdentifier(id: string): AnyID {
 
   let tokenId: CAIP22TokenID | CAIP29TokenID;
   if (_tokenId !== undefined) {
-    tokenId = ethers.BigNumber.from(_tokenId);
+    try {
+      tokenId = ethers.BigNumber.from(_tokenId);
+    } catch (error) {
+      throw new Error(`'${_tokenId}' is not a valid CAIP-19 Token Id`);
+    }
+
     if (!isCAIP22TokenID(tokenId) && !isCAIP29TokenID(tokenId)) {
       throw new Error(`${tokenId} is not a valid CAIP-22 or CAIP-29 Token Id`);
     }

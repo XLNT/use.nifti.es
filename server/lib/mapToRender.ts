@@ -1,17 +1,15 @@
+import { resolveAlt } from 'common/resolveAlt';
 import { AssetMetadata } from 'common/types/AssetMetadata';
 import { AssetID } from 'common/types/AssetReference';
 import { RenderAsset, RenderImage, RenderType } from 'common/types/Render';
 
 import { getOEmbedData } from './oembed';
 
-const getAlt = (metadata: AssetMetadata) =>
-  [metadata.name, metadata.description].filter(Boolean).join(' — ');
-
-function mapToGenericImage(metadata: AssetMetadata): RenderImage {
+async function mapToGenericImage(metadata: AssetMetadata): Promise<RenderImage> {
   return {
     type: RenderType.Image,
     src: metadata.image,
-    alt: getAlt(metadata),
+    alt: await resolveAlt(metadata),
     sources: [{ src: metadata.image }],
   };
 }
@@ -35,13 +33,13 @@ export async function mapToRender(
       fallback: {
         type: RenderType.Image,
         src: data.thumbnail_url,
-        alt: getAlt(metadata),
+        alt: await resolveAlt(metadata),
         sources: [{ src: data.thumbnail_url }],
       },
     };
   }
 
-  const fallback = mapToFallback(reference, metadata);
+  const fallback = await mapToFallback(reference, metadata);
 
   // TODO: what metadata schema is used for videos (not animated loops?)
   if (metadata.animation_url) {
@@ -67,7 +65,7 @@ export async function mapToRender(
   }
 
   return {
-    ...mapToGenericImage(metadata),
+    ...fallback,
     fallback,
   };
 }

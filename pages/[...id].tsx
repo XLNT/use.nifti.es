@@ -58,10 +58,13 @@ function View({
   );
 }
 
+const REVALIDATE_ERROR = 15; // seconds
+const REVALIDATE_SUCCESS = 60 * 60 * 24; // 1 day
+
 export const getStaticProps: GetStaticProps<ComponentPropsWithoutRef<typeof View>> = async (
   ctx,
 ) => {
-  if (ctx.params.id.length !== 3) return { notFound: true, revalidate: 60 };
+  if (ctx.params.id.length !== 3) return { notFound: true, revalidate: REVALIDATE_ERROR };
 
   const id = (ctx.params.id as string[]).join('/');
   let result: AssetMetadataResult;
@@ -76,7 +79,7 @@ export const getStaticProps: GetStaticProps<ComponentPropsWithoutRef<typeof View
           description: error.message,
         },
       },
-      revalidate: 60,
+      revalidate: REVALIDATE_ERROR,
     };
   }
 
@@ -95,7 +98,7 @@ export const getStaticProps: GetStaticProps<ComponentPropsWithoutRef<typeof View
         alt: metaAlt,
       },
     },
-    revalidate: 60,
+    revalidate: REVALIDATE_SUCCESS,
   };
 };
 

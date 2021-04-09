@@ -1,4 +1,4 @@
-import { CAIP3NetworkId, MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID } from 'common/lib/CAIP3';
+import { CAIP3ChainId, MAINNET_NETWORK_ID, RINKEBY_NETWORK_ID } from 'common/lib/CAIP3';
 import { AssetID, AssetType } from 'common/types/AssetReference';
 import { OpenSeaAsset, OpenSeaAssetContract } from 'common/types/OpenSea';
 
@@ -9,7 +9,7 @@ const BASE_URL = {
   [RINKEBY_NETWORK_ID]: 'https://rinkeby-api.opensea.io/api/v1',
 };
 
-export function canFetchOpenSea(chainId: CAIP3NetworkId) {
+export function canFetchOpenSea(chainId: CAIP3ChainId) {
   return Object.keys(BASE_URL).includes(chainId);
 }
 

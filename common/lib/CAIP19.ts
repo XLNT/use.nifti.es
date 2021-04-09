@@ -1,7 +1,4 @@
-import { CAIP3NetworkId } from './CAIP3';
-
-// https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md
-export type ChainId = string;
+import { CAIP3ChainId } from './CAIP3';
 
 // https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-19.md#semantics
 export type AssetNamespace = string;
@@ -14,7 +11,7 @@ export type TokenId = string;
 
 // implements https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-19.md
 export interface CAIP19AssetType {
-  chainId: CAIP3NetworkId;
+  chainId: CAIP3ChainId;
   assetNamespace: AssetNamespace;
   assetReference: AssetReference;
 }

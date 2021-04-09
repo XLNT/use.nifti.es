@@ -1,4 +1,4 @@
-import { CAIP3NetworkId } from './CAIP3';
+import { CAIP3ChainId } from './CAIP3';
 import { CAIP19AssetType } from './CAIP19';
 import { CAIP22TokenID, isCAIP22AssetReference, isCAIP22TokenID } from './CAIP22';
 
@@ -21,7 +21,7 @@ export type CAIP29TokenID = CAIP22TokenID;
 export const isCAIP29TokenID = (tokenId: any): tokenId is CAIP29TokenID => isCAIP22TokenID(tokenId);
 
 export interface CAIP29AssetType extends CAIP19AssetType {
-  chainId: CAIP3NetworkId;
+  chainId: CAIP3ChainId;
   assetNamespace: CAIP29AssetNamespace;
   assetReference: CAIP29AssetReference;
 }

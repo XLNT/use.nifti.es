@@ -153,4 +153,11 @@ export interface OpenSeaAsset {
   supports_wyvern: true;
   ownership: null;
   highest_buyer_commitment: null;
+  owner: {
+    user: {
+      username: string;
+    };
+    profile_img_url: string;
+    address: string;
+  };
 }

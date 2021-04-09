@@ -1,7 +1,7 @@
 import { AnyID } from 'common/types/AssetReference';
 import { ethers } from 'ethers';
 
-import { isCAIP3NetworkId } from './CAIP3';
+import { isCAIP3ChainId } from './CAIP3';
 import {
   CAIP22TokenID,
   isCAIP22AssetNamespace,
@@ -25,7 +25,7 @@ export function parseIdentifier(id: string): AnyID {
 
   const [chainId, assetIdentifier, _tokenId] = id.split('/');
 
-  if (!isCAIP3NetworkId(chainId)) {
+  if (!isCAIP3ChainId(chainId)) {
     throw new Error(`${chainId} is not a valid CAIP-3 Network Id`);
   }
 

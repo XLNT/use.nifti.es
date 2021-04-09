@@ -7,6 +7,7 @@ import { mapToRender } from './lib/mapToRender';
 import { cache } from './lib/metaCache';
 import { resolveAssetMetadata } from './lib/metadata';
 import { getCollection } from './lib/opensea';
+import { fetchAssetOwner } from './lib/owner';
 
 export async function resolve(
   id: string,
@@ -22,12 +23,17 @@ export async function resolve(
       return resolveAssetMetadata(identifier, locale);
     });
 
+    const owner = await cache.maybe(`o-${key}`, () => {
+      return fetchAssetOwner(identifier);
+    });
+
     const render = await cache.maybe(`r-${key}`, () => {
       return mapToRender(identifier, metadata);
     });
 
     return {
       render,
+      owner,
       metadata,
     };
   } else {

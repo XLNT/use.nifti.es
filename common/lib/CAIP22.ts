@@ -1,6 +1,6 @@
 import { BigNumber, ethers, utils } from 'ethers';
 
-import { CAIP3NetworkId } from './CAIP3';
+import { CAIP3ChainId } from './CAIP3';
 import { CAIP19AssetType } from './CAIP19';
 
 // https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-22.md#erc721-asset-namespace
@@ -24,7 +24,7 @@ export const isCAIP22TokenID = (tokenId: any): tokenId is CAIP22TokenID =>
   ethers.BigNumber.isBigNumber(tokenId);
 
 export interface CAIP22AssetType extends CAIP19AssetType {
-  chainId: CAIP3NetworkId;
+  chainId: CAIP3ChainId;
   assetNamespace: CAIP22AssetNamespace;
   assetReference: CAIP22AssetReference;
 }

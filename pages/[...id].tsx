@@ -83,7 +83,7 @@ export const getStaticProps: GetStaticProps<ComponentPropsWithoutRef<typeof View
     };
   }
 
-  const metaTitle = `${result?.metadata.name || 'An Unnammed Object'}`;
+  const metaTitle = `${result?.metadata.name || 'An Unnamed Object'}`;
   const metaDescription = await toPlainText(result?.metadata.description ?? '');
   const metaImage = result?.render.fallback.src;
   const metaAlt = result?.render.fallback.alt;

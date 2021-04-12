@@ -1,6 +1,6 @@
 import { AssetMetadata } from './AssetMetadata';
 import { OpenSeaAssetContract } from './OpenSea';
-import { AssetOwnership } from './Ownership';
+import { AssetOwnerships } from './Ownership';
 import { RenderAsset } from './Render';
 
 // the collection an asset is a part of
@@ -13,6 +13,6 @@ export interface AssetCollectionResult {
 // an individual asset
 export interface AssetMetadataResult {
   render: RenderAsset;
-  ownership: AssetOwnership;
+  ownerships: AssetOwnerships;
   metadata: AssetMetadata;
 }

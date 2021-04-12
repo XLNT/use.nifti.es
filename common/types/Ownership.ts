@@ -9,6 +9,4 @@ export interface Ownership {
   balance: string; // BigNumberish
 }
 
-export type AssetOwnership = {
-  owners: Ownership[];
-};
+export type AssetOwnerships = Ownership[];

@@ -9,7 +9,8 @@
     "start": "next start",
     "test": "jest",
     "test:watch": "jest --watch",
-    "script": "NODE_ENV=${NODE_ENV:-development} node -r ts-node/register -r tsconfig-paths/register"
+    "script": "NODE_ENV=${NODE_ENV:-development} node -r ts-node/register -r tsconfig-paths/register",
+    "bust-cache": "yarn script bin/bust-cache.ts"
   },
   "husky": {
     "hooks": {

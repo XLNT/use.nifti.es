@@ -3,3 +3,12 @@ export interface Owner {
   handle?: string; // a chain-specific or application-specific human-readable handle (i.e. ENS, OpenSea)
   image?: string; // a user's profile image, if exists
 }
+
+export interface Ownership {
+  owner: Owner;
+  balance: string; // BigNumberish
+}
+
+export type AssetOwnership = {
+  owners: Ownership[];
+};

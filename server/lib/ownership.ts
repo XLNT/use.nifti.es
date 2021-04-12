@@ -17,7 +17,7 @@ export async function fetchAssetOwnerships(identifier: AssetID): Promise<AssetOw
 
   return asset.top_ownerships.map((ownership) => ({
     owner: {
-      id: encodeCAIP10AccountId({ accountAddress: asset.owner.address, chainId }),
+      id: encodeCAIP10AccountId({ accountAddress: ownership.owner.address, chainId }),
       handle: ownership.owner.user.username,
       image: ownership.owner.profile_img_url,
     },

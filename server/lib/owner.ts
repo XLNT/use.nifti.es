@@ -15,6 +15,6 @@ export async function fetchAssetOwner(identifier: AssetID): Promise<Owner> {
   return {
     id: encodeCAIP10AccountId({ accountAddress: asset.owner.address, chainId }),
     handle: asset.owner.user.username,
-    img: asset.owner.profile_img_url,
+    image: asset.owner.profile_img_url,
   };
 }

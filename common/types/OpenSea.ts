@@ -42,10 +42,12 @@ enum SafelistRequestStatus {
   Approved = 'approved',
 }
 
-interface OpenSeaOwner {
-  user: {
-    username: string;
-  };
+interface User {
+  username: string;
+}
+
+interface Owner {
+  user: null | User;
   profile_img_url: string;
   address: string;
 }
@@ -161,6 +163,6 @@ export interface OpenSeaAsset {
   supports_wyvern: true;
   ownership: null;
   highest_buyer_commitment: null;
-  owner: OpenSeaOwner;
-  top_ownerships: { owner: OpenSeaOwner; quantity: string }[];
+  owner: Owner;
+  top_ownerships: { owner: Owner; quantity: string }[];
 }

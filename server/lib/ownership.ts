@@ -1,5 +1,6 @@
 import { encodeCAIP10AccountId } from 'common/lib/CAIP10';
 import { AssetID } from 'common/types/AssetReference';
+import { OpenSeaAsset } from 'common/types/OpenSea';
 import { AssetOwnerships } from 'common/types/Ownership';
 
 import { getAsset } from './opensea';
@@ -9,7 +10,16 @@ export async function fetchAssetOwnerships(identifier: AssetID): Promise<AssetOw
   const { chainId } = identifier;
 
   // for now, just use opensea
-  const asset = await getAsset(identifier);
+  let asset: OpenSeaAsset;
+  try {
+    asset = await getAsset(identifier);
+  } catch (error) {
+    // error fetching opensea data, we can assume that nobody owns this token yet, so opensea
+    // doesn't know about it
+    // but log it anyway
+    console.error(error);
+    return null;
+  }
 
   // null = unowned?
   if (!asset.top_ownerships) return null;

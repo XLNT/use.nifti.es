@@ -9,8 +9,7 @@ export const canFetchURI = (uri: string) => isHTTPURI(uri) || isIPFSURI(uri);
 const fetchHTTP: Fetcher = async (uri: string) => {
   const response = await fetch(uri, { headers: { 'User-Agent': 'use.nifti.es/1.0.0' } });
 
-  if (!response.ok)
-    throw new Error(`Invalid metadata response for 'GET ${uri}': ${response.statusText}`);
+  if (!response.ok) throw new Error(`Invalid response for 'GET ${uri}': ${response.statusText}`);
   const data = await response.json();
 
   return data;

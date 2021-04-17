@@ -7,11 +7,15 @@ export class MetaCache {
   constructor(protected cache: MetadataCacheImplementation) {}
 
   async init() {
-    await this.cache.init();
+    return await this.cache.init();
   }
 
   async clear() {
-    await this.cache.clear();
+    return await this.cache.clear();
+  }
+
+  async remove(key: string) {
+    return await this.cache.remove(key);
   }
 
   async maybe<T>(key: string, resolve: Resolver<T>): Promise<T> {

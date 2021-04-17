@@ -40,10 +40,16 @@ export class FaunaDBCache implements MetadataCacheImplementation {
       );
       return result.data.value;
     } catch (error) {
-      if (error instanceof errors.NotFound) {
-        return null;
-      }
+      if (error instanceof errors.NotFound) return null;
+      throw error;
+    }
+  }
 
+  async remove(key: string): Promise<void> {
+    try {
+      await this.client.query(q.Delete(q.Select('ref', q.Get(q.Match(q.Index(this.index), key)))));
+    } catch (error) {
+      if (error instanceof errors.NotFound) return;
       throw error;
     }
   }

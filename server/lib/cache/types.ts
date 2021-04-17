@@ -7,4 +7,5 @@ export interface MetadataCacheImplementation {
   clear(): Promise<void>;
   set(key: string, value: CacheableValue): Promise<void>;
   get<T>(key: string): Promise<T>;
+  remove(key: string): Promise<void>;
 }

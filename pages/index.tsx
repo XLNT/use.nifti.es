@@ -1,66 +1,53 @@
-import { Divider, Heading, Link, Text, VStack } from '@chakra-ui/react';
-import { Pill } from 'client/components/Pill';
+import { NftMetadata } from '@zoralabs/nft-metadata';
+import { GetStaticProps } from 'next';
+import { ComponentProps } from 'react';
+import { resolve } from 'server/resolve';
 
-export default function Home() {
+const EXAMPLE_ASSET_ID = `eip155:1/eip721:0x231D41A72E81fB4493908715CB77BCaCF0ce40b1/0`;
+
+export default function Home({ example }: { example: NftMetadata }) {
   return (
-    <>
-      <VStack
-        minHeight="100vh"
-        py={16}
-        spacing={16}
-        width="full"
-        maxWidth="2xl"
-        mx="auto"
-        overflowX="hidden"
-        align="stretch"
-      >
-        <VStack px={8} spacing={16} align="stretch">
-          <Heading as="h1" fontSize={['2xl', '3xl', '4xl', '5xl']}>
-            <Pill prefix="🖼">use.nifti.es</Pill>
-          </Heading>
-          <Heading as="h2" fontSize={['md', 'lg', 'xl']} lineHeight="tall">
-            A universal NFT metadata and rendering API.
-          </Heading>
-          <Heading as="h2" fontSize="md" lineHeight="tall">
-            <Pill prefix="🖼">use.nifti.es</Pill> returns an NFT&apos;s metadata in a consistent,
-            universal format, as well as domain-specific rendering logic in order to render
-            arbitrary NFTs.
-          </Heading>
-        </VStack>
-        <Divider />
-        <VStack px={8} spacing={8} align="stretch" lineHeight="taller">
-          <Heading as="h3">docs</Heading>
-          <Text>
-            View the documentation on{' '}
-            <Link href="https://github.com/XLNT/use.nifti.es" isExternal>
-              <Pill prefix="📂">GitHub</Pill>
-            </Link>
-            .
-          </Text>
-        </VStack>
-        <Divider />
-        <VStack align="stretch" spacing={4} px={8}>
-          {/* <Heading as="h3">gotta hand it to &apos;em</Heading> */}
-          <Text textStyle="highlightable" lineHeight="taller">
-            <Pill prefix="🖼">use.nifti.es</Pill> is a{' '}
-            <Link href="https://nifti.es" isExternal>
-              <Pill prefix="❏">nifti.es</Pill>
-            </Link>{' '}
-            project by
-            <Link href="https://twitter.com/mattgcondon" isExternal>
-              <Pill prefix="🐦">Matt Condon</Pill>
-            </Link>
-            .
-          </Text>
-          <Text textStyle="highlightable" lineHeight="taller">
-            You can view, edit, and audit the code on{' '}
-            <Link href="https://github.com/XLNT/use.nifti.es" isExternal>
-              <Pill prefix="📂">GitHub</Pill>
-            </Link>
-            .
-          </Text>
-        </VStack>
-      </VStack>
-    </>
+    <div>
+      <h1>
+        <span>🖼️</span> use.nifti.es
+      </h1>
+      <h3>
+        A universal NFT metadata and rendering API, powered by{' '}
+        <a href="https://zora.co" rel="noopener noreferrer" target="_blank">
+          Zora
+        </a>
+        .
+      </h3>
+
+      <p>
+        use.nifti.es returns an NFT&apos;s metadata in a consistent, universal format. view the
+        documentation on{' '}
+        <a href="https://github.com/XLNT/use.nifti.es" rel="noopener noreferrer" target="_blank">
+          GitHub
+        </a>
+        .
+      </p>
+
+      <p>
+        by{' '}
+        <a href="https://twitter.com/1ofthemanymatts" rel="noopener noreferrer" target="_blank">
+          one of the many matts
+        </a>{' '}
+        for{' '}
+        <a href="https://use.nifti.es" rel="noopener noreferrer" target="_blank">
+          nifti.es
+        </a>
+        .
+      </p>
+
+      <h2>Example</h2>
+      <code>https://use.nifti.es/api/{EXAMPLE_ASSET_ID}</code>
+      <pre>{JSON.stringify(example, null, 2)}</pre>
+    </div>
   );
 }
+
+export const getStaticProps: GetStaticProps<ComponentProps<typeof Home>> = async (ctx) => {
+  const example = await resolve(EXAMPLE_ASSET_ID);
+  return { props: { example } };
+};

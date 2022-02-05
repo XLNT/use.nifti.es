@@ -2,7 +2,7 @@
 
 > A universal NFT metadata and rendering API.
 
-🖼 use.nifti.es returns an NFT's metadata in a consistent, universal format, as well as domain-specific rendering logic in order to render arbitrary NFTs. It's like [Noembed](https://noembed.com/) but for digital assets.
+🖼 use.nifti.es returns an NFT's metadata in a consistent, universal format, ~~as well as domain-specific rendering logic in order to render arbitrary NFTs~~. It's like [Noembed](https://noembed.com/) but for digital assets.
 
 🖼 use.nifti.es is a work-in-progress, and was written for [📦 drop.nifti.es](https://drop.nifti.es).
 
@@ -18,28 +18,39 @@ Then, fetch consistent metadata like so:
 
 ```json
 {
-  "render": {
-    "type": "image",
-    "src": "https://themanymatts.lol/images/bagel.png",
-    "alt": "bagel matt — matt's joy is your joy. grab a bagel and enjoi.",
-    "sources": [{ "src": "https://themanymatts.lol/images/bagel.png" }]
-  },
+  "tokenId": "0",
+  "tokenAddress": "0x231D41A72E81fB4493908715CB77BCaCF0ce40b1",
   "metadata": {
-    "name": "bagel matt",
-    "description": "matt's joy is your joy. grab a bagel and enjoi.",
-    "decimals": 2,
-    "image": "https://themanymatts.lol/images/bagel.png"
-  }
+    "name": "Aleatoric 0 // hammer drain",
+    "description": "Aleatoric 0 // hammer drain\n\n> she already got one in the hammer drain\n\n> the high seas in the heal\n\n> hyped to hear\n\n>  it's dream dike hanger\n\n> made the hike here\n\nSeptember 10, 2021 at 03:09",
+    "image": "ipfs://QmcisxwnYnxDvf7oTWNhpfPNuqE71VwPW2uBNawGBoCtDJ/0.mp4",
+    "attributes": [
+      {
+        "display_type": "date",
+        "trait_type": "Created",
+        "value": 1631261340
+      }
+    ]
+  },
+  "tokenURI": "ipfs://QmSADMkhQPiGvJKnCGqnJLjkdPoE88gg5QG3cd4uprXYAV/0.json",
+  "tokenType": "ERC721",
+  "tokenURL": "https://gateway.ipfs.io/ipfs/QmSADMkhQPiGvJKnCGqnJLjkdPoE88gg5QG3cd4uprXYAV/0.json",
+  "tokenURLMimeType": "application/json",
+  "name": "Aleatoric 0 // hammer drain",
+  "description": "Aleatoric 0 // hammer drain\n\n> she already got one in the hammer drain\n\n> the high seas in the heal\n\n> hyped to hear\n\n>  it's dream dike hanger\n\n> made the hike here\n\nSeptember 10, 2021 at 03:09",
+  "imageURL": "https://gateway.ipfs.io/ipfs/QmcisxwnYnxDvf7oTWNhpfPNuqE71VwPW2uBNawGBoCtDJ/0.mp4",
+  "imageURLMimeType": "video/mp4",
+  "contentURL": "https://gateway.ipfs.io/ipfs/QmcisxwnYnxDvf7oTWNhpfPNuqE71VwPW2uBNawGBoCtDJ/0.mp4",
+  "contentURLMimeType": "video/mp4",
+  "attributes": [
+    {
+      "display_type": "date",
+      "trait_type": "Created",
+      "value": 1631261340
+    }
+  ]
 }
 ```
-
-You can also **view** an arbitrary asset by removing the `/api` subpath like:
-
-```
-https://use.nifti.es/eip155:1/erc1155:0x28959Cf125ccB051E70711D0924a62FB28EAF186/0
-```
-
-(this might be useful if you want to show a user a full detail page, but without rendering the entire thing yourself)
 
 ## Asset References (CAIP-19)
 

@@ -7,7 +7,7 @@ export async function resolve(id: string): Promise<NftMetadata> {
 
   const provider = new ethers.providers.InfuraProvider(
     parseInt(assetId.chainId.reference),
-    process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
+    process.env.INFURA_PROJECT_ID,
   );
 
   const parser = new Agent({ provider });

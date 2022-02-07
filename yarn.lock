@@ -576,10 +576,10 @@
   dependencies:
     ethers "^5.0.19"
 
-"@zoralabs/nft-metadata@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@zoralabs/nft-metadata/-/nft-metadata-1.2.2.tgz#25dc1645e41bd2060fd5dc532fc7db942ef4f14f"
-  integrity sha512-iSDpzSsiNuesN0ytk9uG62GGJ0k9hVtSeFwaZnYvL0pD+SDmwbyTIQ8WVf6F4AbFe7DLXywiZqN8pu45YX4kbQ==
+"@zoralabs/nft-metadata@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@zoralabs/nft-metadata/-/nft-metadata-1.2.3.tgz#cf46e2addd7fc369544ff7e13b9739d341db6bcf"
+  integrity sha512-VOzWKETCWryG1fXyyVBazGo5X88spLCp+Dm7Ew9Gd0nznaARd37CndsmxScWECyOSVLb40BjNImcpRFKN016OQ==
   dependencies:
     "@pinata/ipfs-gateway-tools" "1.1.6"
     "@zoralabs/core" "^1.0.7"
@@ -925,10 +925,10 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dotenv@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
-  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+dotenv@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.0.tgz#c619001253be89ebb638d027b609c75c26e47411"
+  integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
 
 elliptic@6.5.4:
   version "6.5.4"

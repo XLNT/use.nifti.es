@@ -14,9 +14,9 @@
     }
   },
   "dependencies": {
-    "@zoralabs/nft-metadata": "^1.2.2",
+    "@zoralabs/nft-metadata": "^1.2.3",
     "caip": "^1.0.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.0",
     "ethers": "^5.5.4",
     "next": "12.0.10",
     "next-compose-plugins": "^2.2.1",
